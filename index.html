@@ -28,29 +28,53 @@
 
 <!-- PAGE: HOME -->
 <div id="page-home" class="page active">
-  <div class="container">
-    <div class="hero">
-      <h1>每一场<span class="gold">胜利</span>，都是答案</h1>
-      <p>搏击平台战绩展示 — 用实力说话，用荣誉证明</p>
-    </div>
-
-    <div class="stats" id="stats-bar"></div>
-
-    <div class="section">
-      <h2>⚔️ 最新战报</h2>
-      <p class="section-desc">平台最新比赛动态</p>
-      <div class="card-grid g3" id="home-matches"></div>
-      <div style="text-align:center;margin-top:24px">
-        <a href="#matches" data-page="matches" onclick="event.preventDefault();document.querySelector('[data-page=matches]').click()" style="color:var(--accent);font-size:.9rem">查看全部比赛 →</a>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">EST. 2024 · 搏击战绩权威平台</div>
+      <h1>用<span class="gold">拳头</span>书写<br>每一页<span class="gold">历史</span></h1>
+      <p class="hero-sub">218 场比赛 · 178 场胜利 · 89 次 KO/TKO · 14 枚奖牌</p>
+      <div class="hero-cta">
+        <a href="#matches" onclick="event.preventDefault();document.querySelector('[data-page=matches]').click()" class="hero-btn">浏览战绩</a>
+        <a href="#fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" class="hero-btn hero-btn-outline">核心选手</a>
       </div>
     </div>
+  </div>
 
-    <div class="section">
-      <h2>🏆 核心选手</h2>
-      <p class="section-desc">平台代表选手</p>
+  <!-- STATS -->
+  <div class="container">
+    <div class="stats-section">
+      <div class="stats" id="stats-bar"></div>
+    </div>
+  </div>
+
+  <!-- LATEST MATCHES -->
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">LATEST</div>
+        <h2>最新战报</h2>
+        <p class="section-desc">平台最新比赛动态</p>
+      </div>
+      <div class="card-grid g3" id="home-matches"></div>
+      <div class="section-footer">
+        <a href="#matches" data-page="matches" onclick="event.preventDefault();document.querySelector('[data-page=matches]').click()" class="view-all">查看全部比赛 →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE FIGHTERS -->
+  <div class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">ACES</div>
+        <h2>核心选手</h2>
+        <p class="section-desc">平台王牌阵容</p>
+      </div>
       <div class="card-grid g4" id="home-fighters"></div>
-      <div style="text-align:center;margin-top:24px">
-        <a href="#fighters" data-page="fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" style="color:var(--accent);font-size:.9rem">查看全部选手 →</a>
+      <div class="section-footer">
+        <a href="#fighters" data-page="fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" class="view-all">查看全部选手 →</a>
       </div>
     </div>
   </div>

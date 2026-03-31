@@ -93,7 +93,7 @@
   function renderHomeFighters() {
     const el = $('#home-fighters');
     if (!el) return;
-    el.innerHTML = FIGHTERS.slice(0, 4).map(f => renderFighterCard(f)).join('');
+    el.innerHTML = FIGHTERS.slice(0, 4).map(f => renderFighterCard(f, true)).join('');
     setupFighterClicks(el);
   }
 
@@ -223,13 +223,15 @@
     const fighter = FIGHTERS.find(f => f.id === m.fighterId);
     const isWin = m.result === '胜';
     let tags = '';
-    if (m.isKey) tags += '<span class="card-tag tag-key">重点</span> ';
+    if (m.isKey) tags += '<span class="card-tag tag-key">★ 重点</span> ';
     tags += `<span class="card-tag ${isWin ? 'tag-win' : 'tag-loss'}">${m.result}</span> `;
     if (m.level === '国际') tags += '<span class="card-tag tag-intl">国际</span> ';
     if (m.level === '全国') tags += '<span class="card-tag tag-champ">全国</span>';
 
+    const keyClass = m.isKey ? ' match-key' : '';
+
     return `
-      <div class="card match-card" data-match-id="${m.id}">
+      <div class="card match-card${keyClass}" data-match-id="${m.id}">
         <div class="card-body">
           <div class="card-meta">
             <span>${m.date}</span>
@@ -247,13 +249,14 @@
     `;
   }
 
-  function renderFighterCard(f) {
+  function renderFighterCard(f, isAce) {
+    const aceClass = isAce ? ' fighter-ace' : '';
     return `
-      <div class="card fighter-card" data-fighter-id="${f.id}">
+      <div class="card fighter-card${aceClass}" data-fighter-id="${f.id}">
         <div class="fighter">
           <div class="fighter-avatar">${f.name.charAt(0)}</div>
           <div class="fighter-name">${f.name}</div>
-          <div class="fighter-info">${f.discipline} | ${f.level}</div>
+          <div class="fighter-info">${f.discipline} · ${f.level}</div>
           <div class="fighter-stats">
             <div class="fs"><div class="fs-num green">${f.wins}</div><div class="fs-label">胜</div></div>
             <div class="fs"><div class="fs-num red">${f.losses}</div><div class="fs-label">负</div></div>
@@ -324,7 +327,7 @@
             <div class="fs"><div class="fs-num">${f.medals}</div><div class="fs-label">奖牌</div></div>
           </div>
           <p style="margin:12px 0">${f.bio}</p>
-          ${f.highlights.length ? '<h4 style="margin:16px 0 8px">🏆 重要荣誉</h4><ul style="padding-left:20px;color:var(--text2)">' + f.highlights.map(h => `<li style="margin-bottom:4px">${h}</li>`).join('') + '</ul>' : ''}
+          ${f.highlight ? '<h4 style="margin:16px 0 8px;font-weight:700">🏆 重要荣誉</h4><p style="color:var(--accent);font-weight:600;font-size:.9rem">' + f.highlight + '</p>' : ''}
           <h4 style="margin:16px 0 8px">📋 近期比赛</h4>
           <div style="max-height:200px;overflow-y:auto">
             ${fighterMatches.slice(0, 5).map(m => {

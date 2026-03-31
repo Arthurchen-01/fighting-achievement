@@ -23,6 +23,7 @@
     renderAllFighters();
     renderTournaments();
     renderHonors();
+    renderMilestones();
     renderVideos();
     setupNav();
     setupModals();
@@ -429,19 +430,64 @@
     `).join('');
   }
 
-  // Honors
+  // Honors - grouped by year with card layout
   function renderHonors() {
     const el = $('#all-honors');
     if (!el) return;
-    const sorted = [...HONORS].sort((a,b) => b.year - a.year);
-    el.innerHTML = sorted.map(h => `
-      <div class="honor-row">
-        <div class="honor-icon">${h.icon}</div>
-        <div>
-          <div class="honor-year">${h.year}</div>
-          <div class="honor-title">${h.title}</div>
-          <div class="honor-desc">${h.desc}</div>
+
+    // Featured honors (major achievements that should stand out)
+    const featuredTitles = ['世运会参赛资格', '全国拳击锦标赛冠军', '世运会选拔赛全胜', '全国泰拳锦标赛双金'];
+
+    // Group by year
+    const yearGroups = {};
+    HONORS.forEach(h => {
+      if (!yearGroups[h.year]) yearGroups[h.year] = [];
+      yearGroups[h.year].push(h);
+    });
+
+    const years = Object.keys(yearGroups).sort((a, b) => b - a);
+
+    el.innerHTML = years.map(year => {
+      const honors = yearGroups[year];
+      const isFeatured = (t) => featuredTitles.includes(t);
+      return `
+        <div class="honor-year-section">
+          <div class="honor-year-header">
+            <div class="honor-year-title">${year}</div>
+            <div class="honor-year-count">${honors.length} 项荣誉</div>
+          </div>
+          <div class="honor-grid">
+            ${honors.map(h => `
+              <div class="honor-card${isFeatured(h.title) ? ' honor-featured' : ''}">
+                <div class="honor-card-icon">${h.icon}</div>
+                <div class="honor-card-year">${h.year}</div>
+                <div class="honor-card-title">${h.title}</div>
+                <div class="honor-card-desc">${h.desc}</div>
+              </div>
+            `).join('')}
+          </div>
         </div>
+      `;
+    }).join('');
+  }
+
+  // Milestone timeline
+  function renderMilestones() {
+    const el = $('#milestone-track');
+    if (!el) return;
+
+    const milestones = [
+      { year: '2023', icon: '🌱', text: '平台成立，首批选手注册', highlight: false },
+      { year: '2024', icon: '🌏', text: '首次参加国际赛事，战绩突破200场', highlight: false },
+      { year: '2025', icon: '🏆', text: '多金年 — 全国锦标赛双金，国际赛全面突破', highlight: true },
+      { year: '2026', icon: '🏟️', text: '征战世界运动会，登上国际最高舞台', highlight: true },
+    ];
+
+    el.innerHTML = milestones.map(m => `
+      <div class="milestone-node${m.highlight ? ' milestone-highlight' : ''}">
+        <div class="milestone-dot">${m.icon}</div>
+        <div class="milestone-year">${m.year}</div>
+        <div class="milestone-text">${m.text}</div>
       </div>
     `).join('');
   }

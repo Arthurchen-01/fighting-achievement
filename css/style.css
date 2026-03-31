@@ -212,6 +212,7 @@ img{max-width:100%;display:block}
   margin-bottom:12px;
 }
 .section-header h2{font-size:2rem;font-weight:800;margin-bottom:8px}
+.section-header h1{font-size:2.2rem;font-weight:900;margin-bottom:8px;letter-spacing:-1px}
 .section-desc{color:var(--text2);font-size:.95rem}
 .section-footer{text-align:center;margin-top:40px}
 .view-all{
@@ -307,6 +308,111 @@ img{max-width:100%;display:block}
 }
 
 /* ========== HONOR ========== */
+.honor-year-section{margin-bottom:48px}
+.honor-year-header{
+  display:flex;align-items:center;gap:16px;margin-bottom:20px;
+  padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.honor-year-title{
+  font-size:1.6rem;font-weight:900;color:var(--accent);letter-spacing:-1px;
+}
+.honor-year-count{
+  font-size:.7rem;font-weight:700;color:var(--text3);letter-spacing:2px;
+  text-transform:uppercase;background:var(--bg3);padding:4px 12px;border-radius:12px;
+}
+.honor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.honor-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:14px;
+  padding:24px;position:relative;overflow:hidden;
+  transition:all .3s cubic-bezier(.25,.46,.45,.94);cursor:default;
+}
+.honor-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity:.5;transition:opacity .3s;
+}
+.honor-card:hover{
+  transform:translateY(-4px);border-color:rgba(224,184,78,.3);
+  box-shadow:0 16px 48px rgba(0,0,0,.35),0 0 20px rgba(224,184,78,.06);
+}
+.honor-card:hover::after{opacity:1}
+.honor-card-icon{font-size:2.4rem;margin-bottom:12px;line-height:1}
+.honor-card-year{
+  font-size:.65rem;font-weight:700;color:var(--accent);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.honor-card-title{font-size:1.1rem;font-weight:800;margin-bottom:8px;color:var(--text)}
+.honor-card-desc{font-size:.85rem;color:var(--text2);line-height:1.6}
+
+/* Honor card: featured (major achievements) */
+.honor-card.honor-featured{
+  border-color:rgba(224,184,78,.35);
+  background:linear-gradient(135deg, rgba(224,184,78,.06) 0%, var(--bg2) 50%);
+  box-shadow:0 0 0 1px rgba(224,184,78,.1);
+  padding:28px;
+}
+.honor-card.honor-featured .honor-card-icon{font-size:3rem}
+.honor-card.honor-featured .honor-card-title{font-size:1.25rem;color:var(--accent)}
+.honor-card.honor-featured::after{
+  height:4px;opacity:.8;
+  background:linear-gradient(90deg, var(--accent2), var(--accent), var(--accent2));
+}
+.honor-card.honor-featured:hover{
+  border-color:rgba(224,184,78,.5);
+  box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(224,184,78,.1);
+}
+
+/* ========== MILESTONE TIMELINE ========== */
+.milestone-section{margin-top:20px}
+.milestone-track-wrapper{
+  overflow-x:auto;padding:20px 0 30px;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:var(--accent) var(--bg3);
+}
+.milestone-track-wrapper::-webkit-scrollbar{height:6px}
+.milestone-track-wrapper::-webkit-scrollbar-track{background:var(--bg3);border-radius:3px}
+.milestone-track-wrapper::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:3px}
+.milestone-track{
+  display:flex;align-items:flex-start;
+  min-width:max-content;padding:0 40px;position:relative;
+}
+.milestone-track::before{
+  content:'';position:absolute;top:24px;left:40px;right:40px;height:3px;
+  background:linear-gradient(90deg, var(--border), var(--accent2), var(--accent), var(--accent2), var(--border));
+  border-radius:2px;
+}
+.milestone-node{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:180px;padding:0 20px;position:relative;z-index:1;
+}
+.milestone-dot{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--bg2);border:3px solid var(--accent2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;margin-bottom:14px;
+  box-shadow:0 0 20px rgba(224,184,78,.1);
+  transition:all .3s;
+}
+.milestone-node:hover .milestone-dot{
+  border-color:var(--accent);transform:scale(1.15);
+  box-shadow:0 0 30px rgba(224,184,78,.25);
+}
+.milestone-year{
+  font-size:.7rem;font-weight:700;color:var(--accent);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.milestone-text{
+  font-size:.82rem;font-weight:600;color:var(--text);text-align:center;
+  line-height:1.5;max-width:160px;
+}
+.milestone-node.milestone-highlight .milestone-dot{
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color:var(--accent);font-size:1.4rem;
+  box-shadow:0 0 30px rgba(224,184,78,.2);
+}
+
+/* ========== HONOR (old fallback) ========== */
 .honor-row{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid var(--border);align-items:flex-start}
 .honor-icon{font-size:2.2rem;min-width:48px;text-align:center;line-height:1}
 .honor-year{font-size:.72rem;color:var(--accent);font-weight:700;letter-spacing:1px}
@@ -318,7 +424,7 @@ img{max-width:100%;display:block}
   width:100%;aspect-ratio:16/9;background:var(--bg3);
   display:flex;align-items:center;justify-content:center;position:relative;
 }
-.video-thumb::after{content:'�?;font-size:2.5rem;color:var(--text3);opacity:.5;transition:all .2s}
+.video-thumb::after{content:'▶';font-size:2.5rem;color:var(--text3);opacity:.5;transition:all .2s}
 .card:hover .video-thumb::after{opacity:.8;color:var(--accent)}
 .video-info{padding:16px 18px}
 .video-title{font-size:.92rem;font-weight:600}
@@ -381,6 +487,7 @@ img{max-width:100%;display:block}
 /* ========== FOOTER ========== */
 footer{border-top:1px solid var(--border);padding:48px 0;text-align:center;margin-top:60px}
 footer p{font-size:.78rem;color:var(--text3);line-height:1.8}
+.footer-brand{margin-bottom:8px;font-weight:600}
 .footer-links{display:flex;gap:20px;justify-content:center;margin-top:16px}
 .footer-links a{color:var(--text3);font-size:.75rem;transition:color .2s}
 .footer-links a:hover{color:var(--accent)}
@@ -563,4 +670,10 @@ footer p{font-size:.78rem;color:var(--text3);line-height:1.8}
   .awards-wall{grid-template-columns:1fr}
   .timeline{max-height:250px}
   .winrate-bar{height:20px}
+  .honor-grid{grid-template-columns:1fr}
+  .honor-card.honor-featured{padding:20px}
+  .milestone-node{min-width:140px;padding:0 12px}
+  .milestone-text{font-size:.75rem;max-width:120px}
+  .milestone-dot{width:40px;height:40px;font-size:1rem}
+  .honor-year-title{font-size:1.3rem}
 }

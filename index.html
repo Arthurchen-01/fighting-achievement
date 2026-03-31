@@ -102,8 +102,11 @@
 <!-- PAGE: MATCHES -->
 <div id="page-matches" class="page">
   <div class="container">
-    <h1 style="margin-bottom:8px">📋 比赛库</h1>
-    <p class="section-desc" style="margin-bottom:24px">平台全部比赛记录，可按级别、项目、年份、选手筛选</p>
+    <div class="section-header" style="margin-bottom:32px">
+      <div class="section-tag">MATCH DATABASE</div>
+      <h1>📋 比赛库</h1>
+      <p class="section-desc">平台全部比赛记录，可按级别、项目、年份、选手筛选</p>
+    </div>
     <div class="match-overview-bar" id="match-overview"></div>
     <div class="filter-bar" id="match-filters"></div>
     <div class="filter-bar" id="match-type-filters"></div>
@@ -116,8 +119,11 @@
 <!-- PAGE: FIGHTERS -->
 <div id="page-fighters" class="page">
   <div class="container">
-    <h1 style="margin-bottom:8px">👤 选手库</h1>
-    <p class="section-desc" style="margin-bottom:24px">平台全部注册选手</p>
+    <div class="section-header" style="margin-bottom:32px">
+      <div class="section-tag">FIGHTER ROSTER</div>
+      <h1>👤 选手库</h1>
+      <p class="section-desc">平台全部注册选手</p>
+    </div>
     <div class="card-grid g4" id="all-fighters"></div>
   </div>
 </div>
@@ -125,8 +131,11 @@
 <!-- PAGE: TOURNAMENTS -->
 <div id="page-tournaments" class="page">
   <div class="container">
-    <h1 style="margin-bottom:8px">🏟️ 赛事</h1>
-    <p class="section-desc" style="margin-bottom:24px">平台参加的全部赛事</p>
+    <div class="section-header" style="margin-bottom:32px">
+      <div class="section-tag">TOURNAMENTS</div>
+      <h1>🏟️ 赛事</h1>
+      <p class="section-desc">平台参加的全部赛事</p>
+    </div>
     <div class="card-grid g3" id="all-tournaments"></div>
   </div>
 </div>
@@ -134,17 +143,33 @@
 <!-- PAGE: HONORS -->
 <div id="page-honors" class="page">
   <div class="container">
-    <h1 style="margin-bottom:8px">🏅 荣誉殿堂</h1>
-    <p class="section-desc" style="margin-bottom:24px">平台历史荣誉与里程碑</p>
+    <div class="section-header" style="margin-bottom:40px">
+      <div class="section-tag">HALL OF GLORY</div>
+      <h1>🏅 荣誉殿堂</h1>
+      <p class="section-desc">每一场胜利铸就的荣耀</p>
+    </div>
     <div id="all-honors"></div>
+    <div class="milestone-section">
+      <div class="section-header" style="margin-top:60px;margin-bottom:32px">
+        <div class="section-tag">MILESTONES</div>
+        <h2>平台里程碑</h2>
+        <p class="section-desc">从启程到荣耀的每一步</p>
+      </div>
+      <div class="milestone-track-wrapper">
+        <div class="milestone-track" id="milestone-track"></div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- PAGE: VIDEOS -->
 <div id="page-videos" class="page">
   <div class="container">
-    <h1 style="margin-bottom:8px">🎬 视频中心</h1>
-    <p class="section-desc" style="margin-bottom:24px">精彩比赛回放</p>
+    <div class="section-header" style="margin-bottom:32px">
+      <div class="section-tag">VIDEO CENTER</div>
+      <h1>🎬 视频中心</h1>
+      <p class="section-desc">精彩比赛回放</p>
+    </div>
     <div class="card-grid g3" id="all-videos"></div>
   </div>
 </div>
@@ -152,7 +177,11 @@
 <!-- PAGE: ABOUT -->
 <div id="page-about" class="page">
   <div class="container">
-    <h1 style="margin-bottom:32px">ℹ️ 关于我们</h1>
+    <div class="section-header" style="margin-bottom:32px">
+      <div class="section-tag">ABOUT US</div>
+      <h1>ℹ️ 关于我们</h1>
+      <p class="section-desc">平台介绍与核心理念</p>
+    </div>
     <div class="about-grid">
       <div class="about-card">
         <h3>平台定位</h3>
@@ -177,7 +206,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="container">
-    <p style="margin-bottom:8px">⚔️ 战绩平台 — 用实力说话</p>
+    <p class="footer-brand">⚔️ 战绩平台 — 用实力说话</p>
     <p>如需沟通，可通过平台官方渠道联系</p>
     <div class="footer-links">
       <a href="#tournaments" data-page="tournaments" onclick="event.preventDefault();document.querySelector('[data-page=tournaments]').click()">赛事</a>

@@ -7,6 +7,8 @@
   let currentPage = 'home';
   let matchFilter = 'all';
   let matchTypeFilter = 'all';
+  let matchYearFilter = 'all';
+  let matchFighterFilter = 'all';
 
   // Init
   document.addEventListener('DOMContentLoaded', init);
@@ -99,16 +101,11 @@
 
       chart.innerHTML = `
         <svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:500px" xmlns="http://www.w3.org/2000/svg">
-          <!-- grid lines -->
           <line x1="${padX}" y1="${h-padY}" x2="${w-padX}" y2="${h-padY}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
           <line x1="${padX}" y1="${padY}" x2="${padX}" y2="${h-padY}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-          <!-- trend line -->
           <polyline points="${coords.join(' ')}" fill="none" stroke="#e0b84e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- data points -->
           ${points.map((v, i) => `<circle cx="${padX + i * scaleX}" cy="${h - padY - v * scaleY}" r="4" fill="#e0b84e"/>`).join('')}
-          <!-- year labels -->
           ${years.map((yr, i) => `<text x="${padX + i * scaleX}" y="${h - 2}" text-anchor="middle" fill="#666" font-size="10" font-family="inherit">${yr}</text>`).join('')}
-          <!-- value labels -->
           ${points.map((v, i) => `<text x="${padX + i * scaleX}" y="${h - padY - v * scaleY - 10}" text-anchor="middle" fill="#e0b84e" font-size="11" font-weight="700" font-family="inherit">${v}</text>`).join('')}
         </svg>
       `;
@@ -185,15 +182,18 @@
     const el = $('#all-matches');
     if (!el) return;
 
-    // Filters
+    // Get unique years from matches
+    const years = [...new Set(MATCHES.map(m => m.date.substring(0,4)))].sort((a,b) => b - a);
+
+    // Level filters
     const filterBar = $('#match-filters');
     if (filterBar) {
       filterBar.innerHTML = `
-        <button class="filter-btn active" data-level="all">全部</button>
-        <button class="filter-btn" data-level="国际">国际</button>
-        <button class="filter-btn" data-level="全国">全国</button>
-        <button class="filter-btn" data-level="区域">区域</button>
-        <button class="filter-btn" data-level="城市">城市</button>
+        <button class="filter-btn active" data-level="all">全部级别</button>
+        <button class="filter-btn" data-level="国际">🌍 国际</button>
+        <button class="filter-btn" data-level="全国">🇨🇳 全国</button>
+        <button class="filter-btn" data-level="区域">🌏 区域</button>
+        <button class="filter-btn" data-level="城市">🏙️ 城市</button>
       `;
       filterBar.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -205,6 +205,7 @@
       });
     }
 
+    // Type filters
     const typeBar = $('#match-type-filters');
     if (typeBar) {
       typeBar.innerHTML = `
@@ -223,6 +224,36 @@
       });
     }
 
+    // Year filters
+    const yearBar = $('#match-year-filters');
+    if (yearBar) {
+      yearBar.innerHTML = `<button class="filter-btn active" data-year="all">全部年份</button>` +
+        years.map(y => `<button class="filter-btn" data-year="${y}">${y}</button>`).join('');
+      yearBar.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          yearBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          matchYearFilter = btn.dataset.year;
+          doRenderAllMatches();
+        });
+      });
+    }
+
+    // Fighter filters
+    const fighterBar = $('#match-fighter-filters');
+    if (fighterBar) {
+      fighterBar.innerHTML = `<button class="filter-btn active" data-fighter="all">全部选手</button>` +
+        FIGHTERS.map(f => `<button class="filter-btn" data-fighter="${f.id}">${f.name}</button>`).join('');
+      fighterBar.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          fighterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          matchFighterFilter = btn.dataset.fighter === 'all' ? 'all' : parseInt(btn.dataset.fighter);
+          doRenderAllMatches();
+        });
+      });
+    }
+
     doRenderAllMatches();
   }
 
@@ -231,9 +262,34 @@
     let filtered = [...MATCHES];
     if (matchFilter !== 'all') filtered = filtered.filter(m => m.level === matchFilter);
     if (matchTypeFilter !== 'all') filtered = filtered.filter(m => m.type === matchTypeFilter);
+    if (matchYearFilter !== 'all') filtered = filtered.filter(m => m.date.startsWith(matchYearFilter));
+    if (matchFighterFilter !== 'all') filtered = filtered.filter(m => m.fighterId === matchFighterFilter);
     filtered.sort((a,b) => b.date.localeCompare(a.date));
     el.innerHTML = filtered.length ? filtered.map(m => renderMatchCard(m)).join('') : '<div class="empty">暂无符合条件的比赛记录</div>';
     setupMatchClicks(el);
+    renderMatchOverview(filtered);
+  }
+
+  // Match overview stats bar
+  function renderMatchOverview(filtered) {
+    const el = $('#match-overview');
+    if (!el) return;
+    const wins = filtered.filter(m => m.result === '胜').length;
+    const losses = filtered.filter(m => m.result === '负').length;
+    const total = filtered.length;
+    const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : '0.0';
+    const kos = filtered.filter(m => m.method === 'KO' || m.method === 'TKO').length;
+    const koRate = total > 0 ? ((kos / total) * 100).toFixed(1) : '0.0';
+
+    el.innerHTML = `
+      <div class="mo-stat"><span class="mo-num mo-wins">${wins}</span><span class="mo-label">胜</span></div>
+      <div class="mo-stat"><span class="mo-num mo-losses">${losses}</span><span class="mo-label">负</span></div>
+      <div class="mo-stat"><span class="mo-num">${winRate}%</span><span class="mo-label">胜率</span></div>
+      <div class="mo-stat"><span class="mo-num">${kos}</span><span class="mo-label">KO/TKO</span></div>
+      <div class="mo-stat"><span class="mo-num">${koRate}%</span><span class="mo-label">KO率</span></div>
+      <div class="mo-stat"><span class="mo-num">${total}</span><span class="mo-label">总场次</span></div>
+      <div class="mo-bar"><div class="mo-bar-fill" style="width:${winRate}%"></div></div>
+    `;
   }
 
   // All fighters
@@ -275,7 +331,7 @@
     if (!el) return;
     const sorted = [...HONORS].sort((a,b) => b.year - a.year);
     el.innerHTML = sorted.map(h => `
-      <div class="honor">
+      <div class="honor-row">
         <div class="honor-icon">${h.icon}</div>
         <div>
           <div class="honor-year">${h.year}</div>
@@ -301,6 +357,45 @@
     `).join('');
   }
 
+  // Level badge class helper
+  function getLevelBadgeClass(level) {
+    switch(level) {
+      case '国际': return 'level-gold';
+      case '全国': return 'level-silver';
+      case '区域': return 'level-bronze';
+      default: return 'level-default';
+    }
+  }
+
+  function getLevelBadgeIcon(level) {
+    switch(level) {
+      case '国际': return '🌍';
+      case '全国': return '🇨🇳';
+      case '区域': return '🌏';
+      default: return '🏙️';
+    }
+  }
+
+  // Calculate streak before a given match for a fighter
+  function getStreakBeforeMatch(match) {
+    const fighterMatches = MATCHES
+      .filter(m => m.fighterId === match.fighterId)
+      .sort((a,b) => a.date.localeCompare(b.date));
+    const idx = fighterMatches.findIndex(m => m.id === match.id);
+    if (idx <= 0) return null;
+
+    let streak = 0;
+    let streakType = null;
+    for (let i = idx - 1; i >= 0; i--) {
+      const r = fighterMatches[i].result;
+      if (streakType === null) streakType = r;
+      if (r === streakType) streak++;
+      else break;
+    }
+    if (streak === 0) return null;
+    return { count: streak, type: streakType };
+  }
+
   // Render helpers
   function renderMatchCard(m) {
     const fighter = FIGHTERS.find(f => f.id === m.fighterId);
@@ -308,8 +403,7 @@
     let tags = '';
     if (m.isKey) tags += '<span class="card-tag tag-key">★ 重点</span> ';
     tags += `<span class="card-tag ${isWin ? 'tag-win' : 'tag-loss'}">${m.result}</span> `;
-    if (m.level === '国际') tags += '<span class="card-tag tag-intl">国际</span> ';
-    if (m.level === '全国') tags += '<span class="card-tag tag-champ">全国</span>';
+    const levelBadge = `<span class="card-tag level-badge ${getLevelBadgeClass(m.level)}">${getLevelBadgeIcon(m.level)} ${m.level}</span>`;
 
     const keyClass = m.isKey ? ' match-key' : '';
 
@@ -318,7 +412,7 @@
         <div class="card-body">
           <div class="card-meta">
             <span>${m.date}</span>
-            <div>${tags}</div>
+            <div>${tags}${levelBadge}</div>
           </div>
           <h3>${m.event}</h3>
           <div class="mc-vs">
@@ -371,19 +465,50 @@
         if (!m) return;
         const fighter = FIGHTERS.find(f => f.id === m.fighterId);
         const isWin = m.result === '胜';
+        const streak = getStreakBeforeMatch(m);
+
+        // Build streak text
+        let streakHtml = '';
+        if (streak && streak.count >= 2) {
+          const streakLabel = streak.type === '胜' ? '连胜' : '连败';
+          const streakClass = streak.type === '胜' ? 'streak-win' : 'streak-loss';
+          streakHtml = `<div class="streak-badge ${streakClass}">本场前${streakLabel}${streak.count}场</div>`;
+        }
+
+        // Significance
+        let significanceHtml = '';
+        if (m.significance) {
+          significanceHtml = `<div class="significance-line">📌 ${m.significance}</div>`;
+        }
+
+        // Opponent info
+        let opponentHtml = `<div class="modal-divider"></div>
+          <div class="opponent-section">
+            <div class="opponent-header">对手信息</div>
+            <div class="opponent-name">${m.opponent}</div>
+            <div class="opponent-meta">${m.opponentCountry}${m.opponentRecord ? ' · 战绩 ' + m.opponentRecord : ''}</div>
+          </div>`;
+
         showModal(`
           <button class="close-btn" onclick="closeModal()">✕</button>
+          <div class="modal-match-header">
+            <span class="level-badge ${getLevelBadgeClass(m.level)}">${getLevelBadgeIcon(m.level)} ${m.level}</span>
+            <span class="card-tag ${isWin ? 'tag-win' : 'tag-loss'}">${m.result}</span>
+          </div>
           <h2>${m.event}</h2>
-          <div class="card-meta" style="margin:12px 0">
-            <span>${m.date} | ${m.level} | ${m.type}</span>
+          ${significanceHtml}
+          <div class="modal-divider"></div>
+          <div class="card-meta" style="margin:0 0 12px">
+            <span>${m.date} | ${m.type}</span>
           </div>
           <div class="mc-vs" style="font-size:1.15rem">
             <span class="mc-fighter">${fighter ? fighter.name : ''}</span>
             <span class="mc-result ${isWin ? 'win' : 'loss'}">${m.result} (${m.method})</span>
           </div>
-          <p style="margin-top:8px">对手：${m.opponent}（${m.opponentCountry}）</p>
-          ${m.round ? `<p>回合：第 ${m.round} 回合</p>` : ''}
-          ${m.isKey ? '<p style="color:var(--accent);margin-top:8px">★ 重点赛事</p>' : ''}
+          ${m.round ? `<p style="margin-top:6px">回合：第 ${m.round} 回合</p>` : ''}
+          ${streakHtml}
+          ${opponentHtml}
+          ${m.isKey ? '<div class="modal-divider"></div><p style="color:var(--accent);margin-top:8px;font-weight:700">★ 重点赛事</p>' : ''}
         `);
       });
     });
@@ -396,12 +521,51 @@
         const f = FIGHTERS.find(x => x.id === id);
         if (!f) return;
         const fighterMatches = MATCHES.filter(m => m.fighterId === f.id).sort((a,b) => b.date.localeCompare(a.date));
+        const total = f.wins + f.losses;
+        const winRate = total > 0 ? ((f.wins / total) * 100).toFixed(1) : '0.0';
+
+        // Build match timeline
+        const timelineHtml = fighterMatches.map(m => {
+          const w = m.result === '胜';
+          return `<div class="timeline-item ${w ? 'tl-win' : 'tl-loss'}">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-header">
+                <span class="tl-date">${m.date}</span>
+                <span class="tl-result ${w ? 'win' : 'loss'}">${m.result}</span>
+              </div>
+              <div class="tl-event">${m.event}</div>
+              <div class="tl-detail">vs ${m.opponent} (${m.opponentCountry}) · ${m.method}${m.round ? ' R'+m.round : ''}</div>
+            </div>
+          </div>`;
+        }).join('');
+
+        // Build awards wall
+        let awardsHtml = '';
+        if (f.awards && f.awards.length > 0) {
+          awardsHtml = `
+            <div class="modal-divider"></div>
+            <h4 class="modal-section-title">🏅 荣誉墙</h4>
+            <div class="awards-wall">
+              ${f.awards.map(a => `
+                <div class="award-item">
+                  <span class="award-icon">${a.icon}</span>
+                  <div>
+                    <div class="award-year">${a.year}</div>
+                    <div class="award-title">${a.title}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
         showModal(`
           <button class="close-btn" onclick="closeModal()">✕</button>
           <div style="text-align:center;margin-bottom:16px">
             <div class="fighter-avatar" style="margin:0 auto 12px;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;background:var(--bg3);border:2px solid var(--accent)">${f.name.charAt(0)}</div>
             <h2>${f.name}</h2>
-            <p style="color:var(--accent)">${f.discipline} | ${f.level}</p>
+            <p style="color:var(--accent)">${f.discipline} | ${f.level} | ${f.country}</p>
           </div>
           <div class="fighter-stats" style="justify-content:center;gap:24px;margin:16px 0">
             <div class="fs"><div class="fs-num green">${f.wins}</div><div class="fs-label">胜</div></div>
@@ -409,17 +573,28 @@
             <div class="fs"><div class="fs-num">${f.kos}</div><div class="fs-label">KO/TKO</div></div>
             <div class="fs"><div class="fs-num">${f.medals}</div><div class="fs-label">奖牌</div></div>
           </div>
+
+          <div class="winrate-section">
+            <div class="winrate-header">
+              <span>胜率</span>
+              <span class="winrate-value">${winRate}%</span>
+            </div>
+            <div class="winrate-bar">
+              <div class="winrate-fill" style="width:${winRate}%">
+                <span class="winrate-bar-text">${f.wins}胜${f.losses}负</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-divider"></div>
           <p style="margin:12px 0">${f.bio}</p>
-          ${f.highlight ? '<h4 style="margin:16px 0 8px;font-weight:700">🏆 重要荣誉</h4><p style="color:var(--accent);font-weight:600;font-size:.9rem">' + f.highlight + '</p>' : ''}
-          <h4 style="margin:16px 0 8px">📋 近期比赛</h4>
-          <div style="max-height:200px;overflow-y:auto">
-            ${fighterMatches.slice(0, 5).map(m => {
-              const w = m.result === '胜';
-              return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:.85rem">
-                <span>${m.date} ${m.event}</span>
-                <span style="color:${w ? 'var(--green)' : 'var(--red)'}">${m.result} ${m.method}</span>
-              </div>`;
-            }).join('')}
+
+          ${awardsHtml}
+
+          <div class="modal-divider"></div>
+          <h4 class="modal-section-title">📋 比赛时间线</h4>
+          <div class="timeline">
+            ${timelineHtml}
           </div>
         `);
       });

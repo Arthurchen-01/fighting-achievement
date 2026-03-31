@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>战绩平台 | 搏击荣誉殿堂</title>
+  <meta name="description" content="搏击平台战绩展示 — 记录每一场胜利，每一份荣誉。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">⚔️ 战绩<span>平台</span></div>
+    <button class="nav-burger" aria-label="菜单">☰</button>
+    <ul class="nav-links">
+      <li><a href="#home" data-page="home" class="active">首页</a></li>
+      <li><a href="#matches" data-page="matches">比赛库</a></li>
+      <li><a href="#fighters" data-page="fighters">选手库</a></li>
+      <li><a href="#tournaments" data-page="tournaments">赛事</a></li>
+      <li><a href="#honors" data-page="honors">荣誉</a></li>
+      <li><a href="#videos" data-page="videos">视频</a></li>
+      <li><a href="#about" data-page="about">关于</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- PAGE: HOME -->
+<div id="page-home" class="page active">
+  <div class="container">
+    <div class="hero">
+      <h1>每一场<span class="gold">胜利</span>，都是答案</h1>
+      <p>搏击平台战绩展示 — 用实力说话，用荣誉证明</p>
+    </div>
+
+    <div class="stats" id="stats-bar"></div>
+
+    <div class="section">
+      <h2>⚔️ 最新战报</h2>
+      <p class="section-desc">平台最新比赛动态</p>
+      <div class="card-grid g3" id="home-matches"></div>
+      <div style="text-align:center;margin-top:24px">
+        <a href="#matches" data-page="matches" onclick="event.preventDefault();document.querySelector('[data-page=matches]').click()" style="color:var(--accent);font-size:.9rem">查看全部比赛 →</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🏆 核心选手</h2>
+      <p class="section-desc">平台代表选手</p>
+      <div class="card-grid g4" id="home-fighters"></div>
+      <div style="text-align:center;margin-top:24px">
+        <a href="#fighters" data-page="fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" style="color:var(--accent);font-size:.9rem">查看全部选手 →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: MATCHES -->
+<div id="page-matches" class="page">
+  <div class="container">
+    <h1 style="margin-bottom:8px">📋 比赛库</h1>
+    <p class="section-desc" style="margin-bottom:24px">平台全部比赛记录，可按级别和项目筛选</p>
+    <div class="filter-bar" id="match-filters"></div>
+    <div class="filter-bar" id="match-type-filters"></div>
+    <div class="card-grid g3" id="all-matches"></div>
+  </div>
+</div>
+
+<!-- PAGE: FIGHTERS -->
+<div id="page-fighters" class="page">
+  <div class="container">
+    <h1 style="margin-bottom:8px">👤 选手库</h1>
+    <p class="section-desc" style="margin-bottom:24px">平台全部注册选手</p>
+    <div class="card-grid g4" id="all-fighters"></div>
+  </div>
+</div>
+
+<!-- PAGE: TOURNAMENTS -->
+<div id="page-tournaments" class="page">
+  <div class="container">
+    <h1 style="margin-bottom:8px">🏟️ 赛事</h1>
+    <p class="section-desc" style="margin-bottom:24px">平台参加的全部赛事</p>
+    <div class="card-grid g3" id="all-tournaments"></div>
+  </div>
+</div>
+
+<!-- PAGE: HONORS -->
+<div id="page-honors" class="page">
+  <div class="container">
+    <h1 style="margin-bottom:8px">🏅 荣誉殿堂</h1>
+    <p class="section-desc" style="margin-bottom:24px">平台历史荣誉与里程碑</p>
+    <div id="all-honors"></div>
+  </div>
+</div>
+
+<!-- PAGE: VIDEOS -->
+<div id="page-videos" class="page">
+  <div class="container">
+    <h1 style="margin-bottom:8px">🎬 视频中心</h1>
+    <p class="section-desc" style="margin-bottom:24px">精彩比赛回放</p>
+    <div class="card-grid g3" id="all-videos"></div>
+  </div>
+</div>
+
+<!-- PAGE: ABOUT -->
+<div id="page-about" class="page">
+  <div class="container">
+    <h1 style="margin-bottom:32px">ℹ️ 关于我们</h1>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>平台定位</h3>
+        <p>战绩平台是一个专注于搏击运动（泰拳、自由搏击、拳击）的综合训练与比赛平台。我们致力于培养高水平搏击选手，在国内外各大赛事中展现实力。</p>
+      </div>
+      <div class="about-card">
+        <h3>核心理念</h3>
+        <p>以战绩为核心，用实力说话。每一场比赛都是我们能力的证明，每一份荣誉都是我们努力的结晶。我们相信真正的实力不需要华丽的言辞。</p>
+      </div>
+      <div class="about-card">
+        <h3>发展愿景</h3>
+        <p>成为国内顶尖的搏击训练与竞赛平台。通过系统化训练和国际化赛事参与，持续提升选手竞技水平，为搏击运动的发展贡献力量。</p>
+      </div>
+      <div class="about-card">
+        <h3>参赛经历</h3>
+        <p>平台积极参与国内外各类搏击赛事，包括世界运动会、全国锦标赛、东亚锦标赛、国际邀请赛等。通过高水平赛事检验训练成果，积累比赛经验。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px">⚔️ 战绩平台 — 用实力说话</p>
+    <p>如需沟通，可通过平台官方渠道联系</p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

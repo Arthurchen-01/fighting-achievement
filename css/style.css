@@ -470,9 +470,11 @@ img{max-width:100%;display:block}
 .modal .close-btn{
   position:sticky;top:0;float:right;background:none;border:none;
   color:var(--text2);font-size:1.5rem;cursor:pointer;
-  transition:color .2s;
+  transition:color .2s;z-index:1;
+  min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;
 }
 .modal .close-btn:hover{color:var(--text)}
+.modal .close-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
 
 /* ========== PAGE ========== */
 .page{display:none}
@@ -494,6 +496,21 @@ footer p{font-size:.78rem;color:var(--text3);line-height:1.8}
 
 /* ========== EMPTY STATE ========== */
 .empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:.95rem}
+
+/* ========== FOCUS & ACCESSIBILITY ========== */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a:focus-visible,button:focus-visible{border-radius:4px}
+.hero-btn:focus-visible,.filter-btn:focus-visible,.view-all:focus-visible{outline-offset:3px}
+.card:focus-visible{outline-offset:-2px}
+
+/* Touch-friendly improvements */
+@media(hover:none){
+  .card:hover{transform:none;box-shadow:none}
+  .card:active{transform:scale(.98)}
+  .honor-card:hover{transform:none}
+  .honor-card:active{transform:scale(.98)}
+  .upcoming-card:hover{border-color:rgba(224,184,78,.35);box-shadow:none}
+}
 
 /* ========== MATCH OVERVIEW BAR ========== */
 .match-overview-bar{
@@ -657,23 +674,66 @@ footer p{font-size:.78rem;color:var(--text3);line-height:1.8}
 }
 @media(max-width:480px){
   .hero h1{font-size:1.8rem}
+  .hero-sub{font-size:.85rem;padding:0 8px}
+  .hero-badge{font-size:.6rem;padding:5px 14px;letter-spacing:2px}
+  .hero-btn{padding:12px 28px;font-size:.85rem}
   .stats-row-primary{grid-template-columns:1fr}
   .stats-row-secondary{grid-template-columns:1fr 1fr}
   .stat-primary .stat-num{font-size:2.2rem}
   .stat-secondary .stat-num{font-size:1.5rem}
+  .stat-primary{padding:28px 12px}
+  .stat-secondary{padding:20px 8px}
   .yearly-grid{grid-template-columns:1fr}
+  .yearly-card{padding:18px 16px 16px}
+  .yearly-record{font-size:1.5rem}
   .container{padding:0 16px}
   .match-overview-bar{gap:10px;padding:12px 14px}
   .mo-num{font-size:1.1rem}
-  .modal{padding:20px;max-height:90vh}
+  .modal{padding:20px;max-height:92vh;border-radius:12px}
   .modal h2{font-size:1.15rem}
+  .modal p{font-size:.85rem}
+  .modal .close-btn{font-size:1.3rem}
   .awards-wall{grid-template-columns:1fr}
   .timeline{max-height:250px}
   .winrate-bar{height:20px}
   .honor-grid{grid-template-columns:1fr}
+  .honor-card{padding:20px}
   .honor-card.honor-featured{padding:20px}
+  .honor-card-icon{font-size:2rem}
+  .honor-card.honor-featured .honor-card-icon{font-size:2.4rem}
+  .honor-card-title{font-size:1rem}
+  .honor-card.honor-featured .honor-card-title{font-size:1.1rem}
+  .honor-card-desc{font-size:.82rem}
+  .honor-year-header{flex-direction:column;gap:8px;align-items:flex-start}
+  .honor-year-title{font-size:1.3rem}
   .milestone-node{min-width:140px;padding:0 12px}
   .milestone-text{font-size:.75rem;max-width:120px}
   .milestone-dot{width:40px;height:40px;font-size:1rem}
-  .honor-year-title{font-size:1.3rem}
+  .section{padding:48px 0}
+  .section-header{margin-bottom:32px}
+  .section-header h1{font-size:1.8rem}
+  .section-header h2{font-size:1.4rem}
+  .section-desc{font-size:.88rem}
+  .card-body{padding:16px 18px}
+  .card h3{font-size:.95rem}
+  .mc-vs{gap:8px}
+  .fighter{padding:24px 16px}
+  .fighter-avatar{width:72px;height:72px;font-size:1.6rem}
+  .fighter-stats{gap:16px}
+  .fs-num{font-size:1.2rem}
+  .upcoming-card{padding:18px}
+  .upcoming-event-name{font-size:1rem}
+  .upcoming-countdown{font-size:1.2rem}
+  .upcoming-details{gap:12px}
+  .upcoming-detail{font-size:.8rem}
+  .filter-btn{padding:6px 14px;font-size:.75rem}
+  .filter-bar{gap:6px;margin-bottom:20px}
+  .footer-links{flex-wrap:wrap;gap:12px}
+  .about-card{padding:20px}
+  .about-card h3{font-size:.95rem}
+  .about-card p{font-size:.85rem}
+  .significance-line{font-size:.78rem;padding:6px 10px}
+  .streak-badge{font-size:.72rem;padding:3px 10px}
+  .opponent-name{font-size:.92rem}
+  .opponent-meta{font-size:.78rem}
 }

@@ -29,11 +29,20 @@
     setupModals();
     setupFooterLinks();
     setupAnimations();
-    showPage('home');
+    // Only show home if no valid hash is present (hash routing handled in setupNav)
+    if (!location.hash || !['home','matches','fighters','tournaments','honors','videos','about'].includes(location.hash.slice(1))) {
+      showPage('home');
+    }
     // Start count-up after a short delay for stats to be in DOM
     requestAnimationFrame(() => {
       requestAnimationFrame(() => startCountUp());
     });
+    // Remove loading screen
+    const ls = document.getElementById('loading-screen');
+    if (ls) {
+      ls.classList.add('done');
+      setTimeout(() => ls.remove(), 500);
+    }
   }
 
   // Navigation
@@ -43,16 +52,22 @@
         e.preventDefault();
         const page = a.dataset.page;
         showPage(page);
-        $$('.nav-links').forEach(ul => ul.classList.remove('open'));
+        const navLinks = $('.nav-links');
+        if (navLinks) navLinks.classList.remove('open');
+        const burger = $('.nav-burger');
+        if (burger) burger.setAttribute('aria-expanded', 'false');
       });
     });
     const burger = $('.nav-burger');
-    if (burger) {
+    const navLinks = $('.nav-links');
+    if (burger && navLinks) {
       burger.addEventListener('click', () => {
-        $$('.nav-links').forEach(ul => ul.classList.toggle('open'));
+        const isOpen = navLinks.classList.toggle('open');
+        burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        burger.setAttribute('aria-label', isOpen ? '关闭导航菜单' : '打开导航菜单');
       });
     }
-    // hash
+    // hash routing: restore state on page load
     if (location.hash) {
       const p = location.hash.slice(1);
       if (['home','matches','fighters','tournaments','honors','videos','about'].includes(p)) showPage(p);
@@ -126,7 +141,8 @@
       const years = ['2023', '2024', '2025', '2026'];
 
       chart.innerHTML = `
-        <svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:500px" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:500px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="年度胜场趋势图：2023年${points[0]}胜，2024年${points[1]}胜，2025年${points[2]}胜，2026年${points[3]}胜">
+          <title>年度胜场趋势图</title>
           <line x1="${padX}" y1="${h-padY}" x2="${w-padX}" y2="${h-padY}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
           <line x1="${padX}" y1="${padY}" x2="${padX}" y2="${h-padY}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
           <polyline points="${coords.join(' ')}" fill="none" stroke="#e0b84e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -497,8 +513,8 @@
     const el = $('#all-videos');
     if (!el) return;
     el.innerHTML = VIDEOS.map(v => `
-      <div class="card video-card">
-        <div class="video-thumb"></div>
+      <div class="card video-card" role="article" aria-label="视频：${v.title}">
+        <div class="video-thumb" role="img" aria-label="视频缩略图：${v.title}"><span aria-hidden="true"></span></div>
         <div class="video-info">
           <div class="video-title">${v.title}</div>
           <div class="video-meta">${v.fighter} | ${v.event} | ${v.result}</div>
@@ -640,7 +656,7 @@
           </div>`;
 
         showModal(`
-          <button class="close-btn" onclick="closeModal()">✕</button>
+          <button class="close-btn" onclick="closeModal()" aria-label="关闭弹窗">✕</button>
           <div class="modal-match-header">
             <span class="level-badge ${getLevelBadgeClass(m.level)}">${getLevelBadgeIcon(m.level)} ${m.level}</span>
             <span class="card-tag ${isWin ? 'tag-win' : 'tag-loss'}">${m.result}</span>
@@ -711,7 +727,7 @@
         }
 
         showModal(`
-          <button class="close-btn" onclick="closeModal()">✕</button>
+          <button class="close-btn" onclick="closeModal()" aria-label="关闭弹窗">✕</button>
           <div style="text-align:center;margin-bottom:16px">
             <div class="fighter-avatar" style="margin:0 auto 12px;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;background:var(--bg3);border:2px solid var(--accent)">${f.name.charAt(0)}</div>
             <h2>${f.name}</h2>
@@ -752,17 +768,27 @@
   }
 
   // Modal API (exposed globally for onclick)
+  let lastFocusedElement = null;
   window.showModal = function(html) {
     const overlay = $('#modal-overlay');
     const content = $('#modal-content');
     if (overlay && content) {
+      lastFocusedElement = document.activeElement;
       content.innerHTML = html;
       overlay.classList.add('open');
+      // Focus the close button
+      const closeBtn = content.querySelector('.close-btn');
+      if (closeBtn) closeBtn.focus();
     }
   };
   window.closeModal = function() {
     const overlay = $('#modal-overlay');
     if (overlay) overlay.classList.remove('open');
+    // Return focus to the element that triggered the modal
+    if (lastFocusedElement && lastFocusedElement.focus) {
+      lastFocusedElement.focus();
+      lastFocusedElement = null;
+    }
   };
 
   // Micro-animations: intersection observer + nav scroll shadow

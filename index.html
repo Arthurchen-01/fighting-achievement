@@ -4,21 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>战绩平台 | 搏击荣誉殿堂</title>
-  <meta name="description" content="搏击平台战绩展示 — 记录每一场胜利，每一份荣誉。">
+  <meta name="description" content="搏击平台战绩展示 — 218场战斗，178次证明自己。涵盖泰拳、自由搏击、拳击，记录每一场胜利与荣誉。">
+  <meta name="keywords" content="搏击,泰拳,自由搏击,拳击,战绩,比赛,选手">
+  <meta property="og:title" content="战绩平台 | 搏击荣誉殿堂">
+  <meta property="og:description" content="拳头不会说谎 — 218场战斗，178次证明自己。">
+  <meta property="og:type" content="website">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Loading state - shows until JS removes it */
+    .loading-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .4s ease}
+    .loading-screen.done{opacity:0;pointer-events:none}
+    .loading-spinner{width:40px;height:40px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
 </head>
 <body>
+<div class="loading-screen" id="loading-screen" aria-hidden="true"><div class="loading-spinner"></div></div>
 
 <!-- NAV -->
-<nav class="nav">
+<nav class="nav" role="navigation" aria-label="主导航">
   <div class="nav-inner">
     <div class="nav-logo">⚔️ 战绩<span>平台</span></div>
-    <button class="nav-burger" aria-label="菜单">☰</button>
-    <ul class="nav-links">
-      <li><a href="#home" data-page="home" class="active">首页</a></li>
-      <li><a href="#matches" data-page="matches">比赛库</a></li>
-      <li><a href="#fighters" data-page="fighters">选手库</a></li>
-      <li><a href="#honors" data-page="honors">荣誉殿堂</a></li>
+    <button class="nav-burger" aria-label="打开导航菜单" aria-expanded="false" aria-controls="nav-menu">☰</button>
+    <ul class="nav-links" id="nav-menu" role="menubar">
+      <li role="none"><a href="#home" data-page="home" class="active" role="menuitem">首页</a></li>
+      <li role="none"><a href="#matches" data-page="matches" role="menuitem">比赛库</a></li>
+      <li role="none"><a href="#fighters" data-page="fighters" role="menuitem">选手库</a></li>
+      <li role="none"><a href="#honors" data-page="honors" role="menuitem">荣誉殿堂</a></li>
     </ul>
   </div>
 </nav>
@@ -33,8 +45,8 @@
       <h1><span class="gold">拳头</span>不会说谎</h1>
       <p class="hero-sub">218 场战斗，178 次证明自己。实力即真相。</p>
       <div class="hero-cta">
-        <a href="#matches" onclick="event.preventDefault();document.querySelector('[data-page=matches]').click()" class="hero-btn">浏览战绩</a>
-        <a href="#fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" class="hero-btn hero-btn-outline">核心选手</a>
+        <a href="#matches" onclick="event.preventDefault();document.querySelector('[data-page=matches]').click()" class="hero-btn" role="button" aria-label="浏览全部比赛战绩">浏览战绩</a>
+        <a href="#fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" class="hero-btn hero-btn-outline" role="button" aria-label="查看核心选手阵容">核心选手</a>
       </div>
     </div>
   </div>
@@ -107,7 +119,7 @@
       <h1>📋 比赛库</h1>
       <p class="section-desc">平台全部比赛记录，可按级别、项目、年份、选手筛选</p>
     </div>
-    <div class="match-overview-bar" id="match-overview"></div>
+    <div class="match-overview-bar" id="match-overview" aria-live="polite" aria-label="筛选结果统计"></div>
     <div class="filter-bar" id="match-filters"></div>
     <div class="filter-bar" id="match-type-filters"></div>
     <div class="filter-bar" id="match-year-filters"></div>
@@ -217,7 +229,7 @@
 </footer>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modal-overlay">
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="详情弹窗">
   <div class="modal" id="modal-content"></div>
 </div>
 

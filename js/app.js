@@ -15,6 +15,7 @@
 
   function init() {
     renderStats();
+    renderUpcoming();
     renderYearlyOverview();
     renderHomeMatches();
     renderHomeFighters();
@@ -26,7 +27,12 @@
     setupNav();
     setupModals();
     setupFooterLinks();
+    setupAnimations();
     showPage('home');
+    // Start count-up after a short delay for stats to be in DOM
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => startCountUp());
+    });
   }
 
   // Navigation
@@ -64,27 +70,46 @@
     window.scrollTo(0, 0);
   }
 
-  // Yearly overview
+  // Yearly overview with keywords and win bars
   function renderYearlyOverview() {
     const el = $('#yearly-overview');
     const chart = $('#trend-chart');
     if (!el) return;
 
     const yearData = [
-      {year: 2026, wins: 7, losses: 1, total: 8, detail: '世运会选拔赛 · 全国拳击锦标赛', active: true},
-      {year: 2025, wins: 19, losses: 3, total: 22, detail: '全国泰拳锦标赛双金 · 国际赛突破'},
-      {year: 2024, wins: 129, losses: 31, total: 160, detail: '平台快速发展期 · 战绩突破200场'},
-      {year: 2023, wins: 23, losses: 5, total: 28, detail: '平台初创 · 首批选手注册'},
+      {year: 2026, wins: 7, losses: 1, total: 8, detail: '世运会选拔赛 · 全国拳击锦标赛', active: true, keyword: '突破之年'},
+      {year: 2025, wins: 19, losses: 3, total: 22, detail: '全国泰拳锦标赛双金 · 国际赛突破', keyword: '统治之年'},
+      {year: 2024, wins: 129, losses: 31, total: 160, detail: '平台快速发展期 · 战绩突破200场', keyword: '爆发之年'},
+      {year: 2023, wins: 23, losses: 5, total: 28, detail: '平台初创 · 首批选手注册', keyword: '启程之年'},
     ];
 
     el.innerHTML = yearData.map(y => {
       const rate = ((y.wins / y.total) * 100).toFixed(1);
+      const maxVal = Math.max(y.wins, y.losses);
+      const winBarH = Math.max(6, (y.wins / maxVal) * 24);
+      const lossBarH = Math.max(4, (y.losses / maxVal) * 24);
+
+      // Generate individual bars (wins + losses grouped)
+      const barsHtml = [];
+      for (let i = 0; i < Math.min(y.wins, 10); i++) {
+        const h = 8 + Math.random() * 16;
+        barsHtml.push(`<div class="yearly-bar-col"><div class="yearly-bar-item bar-win" style="height:${h}px"></div></div>`);
+      }
+      if (y.losses > 0) {
+        for (let i = 0; i < Math.min(y.losses, 3); i++) {
+          const h = 4 + Math.random() * 8;
+          barsHtml.push(`<div class="yearly-bar-col"><div class="yearly-bar-item bar-loss" style="height:${h}px"></div></div>`);
+        }
+      }
+
       return `
         <div class="yearly-card">
           <div class="yearly-year">${y.year}${y.active ? ' · 进行中' : ''}</div>
+          <div class="yearly-keyword">${y.keyword}</div>
           <div class="yearly-record">${y.wins}胜${y.losses}负</div>
           <div class="yearly-winrate">${rate}% 胜率</div>
           <div class="yearly-detail">${y.total}场 · ${y.detail}</div>
+          <div class="yearly-bar-row">${barsHtml.join('')}</div>
         </div>
       `;
     }).join('');
@@ -123,7 +148,7 @@
     });
   }
 
-  // Stats - tiered layout
+  // Stats - tiered layout with count-up targets
   function renderStats() {
     const el = $('#stats-bar');
     if (!el) return;
@@ -131,33 +156,112 @@
     el.innerHTML = `
       <div class="stats-row stats-row-primary">
         <div class="stat stat-primary">
-          <div class="stat-num">${STATS.totalWins}</div>
+          <div class="stat-num" data-target="${STATS.totalWins}" data-suffix="">0</div>
           <div class="stat-label">总胜场</div>
         </div>
         <div class="stat stat-primary">
-          <div class="stat-num">${winRate}%</div>
+          <div class="stat-num" data-target="${winRate}" data-suffix="%" data-decimal="1">0%</div>
           <div class="stat-label">胜率</div>
         </div>
       </div>
       <div class="stats-row stats-row-secondary">
         <div class="stat stat-secondary">
-          <div class="stat-num">${STATS.totalMatches}</div>
+          <div class="stat-num" data-target="${STATS.totalMatches}" data-suffix="">0</div>
           <div class="stat-label">总场次</div>
         </div>
         <div class="stat stat-secondary">
-          <div class="stat-num">${STATS.totalKOs}</div>
+          <div class="stat-num" data-target="${STATS.totalKOs}" data-suffix="">0</div>
           <div class="stat-label">KO/TKO</div>
         </div>
         <div class="stat stat-secondary">
-          <div class="stat-num">${STATS.medals}</div>
+          <div class="stat-num" data-target="${STATS.medals}" data-suffix="">0</div>
           <div class="stat-label">奖牌</div>
         </div>
         <div class="stat stat-secondary">
-          <div class="stat-num">${STATS.intlMatches}</div>
+          <div class="stat-num" data-target="${STATS.intlMatches}" data-suffix="">0</div>
           <div class="stat-label">国际赛</div>
         </div>
       </div>
     `;
+  }
+
+  // Count-up animation
+  function startCountUp() {
+    const els = document.querySelectorAll('.stat-num[data-target]');
+    els.forEach(el => {
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const decimal = parseInt(el.dataset.decimal) || 0;
+      const duration = 1500;
+      const startTime = performance.now();
+      el.classList.add('counting');
+
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutCubic(progress);
+        const current = eased * target;
+        if (decimal > 0) {
+          el.textContent = current.toFixed(decimal) + suffix;
+        } else {
+          el.textContent = Math.round(current) + suffix;
+        }
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  // Upcoming events
+  function renderUpcoming() {
+    const el = $('#upcoming-events');
+    if (!el) return;
+
+    const events = [
+      {
+        name: '世界运动会 2026',
+        location: '成都',
+        type: '泰拳',
+        date: '2026-08-07',
+        fighters: ['刘晓慧', 'Louisa'],
+        desc: '平台首次征战世界运动会，刘晓慧和Louisa代表出战泰拳项目。'
+      }
+    ];
+
+    el.innerHTML = events.map(ev => {
+      const targetDate = new Date(ev.date);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const diffMs = targetDate - today;
+      const days = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+
+      return `
+        <div class="upcoming-card">
+          <div class="upcoming-badge">⏳ 距离开赛</div>
+          <div class="upcoming-header">
+            <div class="upcoming-event-name">${ev.name}</div>
+            <div class="upcoming-countdown">
+              ${days}<small>天</small>
+            </div>
+          </div>
+          <div class="upcoming-details">
+            <div class="upcoming-detail">📍 <strong>${ev.location}</strong></div>
+            <div class="upcoming-detail">🥊 <strong>${ev.type}</strong></div>
+            <div class="upcoming-detail">📅 <strong>${ev.date}</strong></div>
+          </div>
+          <p style="color:var(--text2);font-size:.85rem;margin-top:10px">${ev.desc}</p>
+          <div class="upcoming-fighters">
+            ${ev.fighters.map(f => `<span class="upcoming-fighter-tag">👤 ${f}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   // Home matches (latest 6)
@@ -614,5 +718,39 @@
     const overlay = $('#modal-overlay');
     if (overlay) overlay.classList.remove('open');
   };
+
+  // Micro-animations: intersection observer + nav scroll shadow
+  function setupAnimations() {
+    // Fade-in-up on scroll
+    const animateEls = document.querySelectorAll('[data-animate]');
+    if ('IntersectionObserver' in window && animateEls.length) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      animateEls.forEach(el => observer.observe(el));
+    } else {
+      animateEls.forEach(el => el.classList.add('visible'));
+    }
+
+    // Nav scroll shadow
+    const nav = document.querySelector('.nav');
+    if (nav) {
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            nav.classList.toggle('scrolled', window.scrollY > 10);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    }
+  }
 
 })();

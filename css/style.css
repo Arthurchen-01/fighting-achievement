@@ -18,7 +18,77 @@
   --red-bg: rgba(231,76,60,.1);
 }
 
-/* ========== RESET ========== */
+/* ========== COUNT-UP ========== */
+.stat-num[data-target]{transition:none}
+.stat-num.counting{transition:none}
+
+/* ========== FADE-IN-UP ANIMATION ========== */
+[data-animate]{opacity:0;transform:translateY(40px);transition:opacity .7s ease-out,transform .7s ease-out}
+[data-animate].visible{opacity:1;transform:translateY(0)}
+
+/* ========== NAV SCROLL SHADOW ========== */
+.nav{transition:box-shadow .3s ease}
+.nav.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+
+/* ========== UPCOMING EVENTS ========== */
+.upcoming-grid{display:grid;gap:16px}
+.upcoming-card{
+  border:2px dashed rgba(224,184,78,.35);border-radius:14px;padding:28px 32px;
+  background:linear-gradient(135deg, rgba(224,184,78,.04) 0%, var(--bg2) 60%);
+  position:relative;overflow:hidden;transition:all .3s;
+}
+.upcoming-card:hover{border-color:var(--accent);box-shadow:0 0 30px rgba(224,184,78,.08)}
+.upcoming-card::before{
+  content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;
+  border-radius:50%;background:rgba(224,184,78,.06);
+}
+.upcoming-header{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.upcoming-event-name{font-size:1.3rem;font-weight:800;color:var(--text);flex:1}
+.upcoming-countdown{
+  font-size:1.8rem;font-weight:900;color:var(--accent);line-height:1;
+  display:flex;align-items:baseline;gap:4px;
+}
+.upcoming-countdown small{font-size:.7rem;color:var(--text3);font-weight:600;letter-spacing:1px}
+.upcoming-details{display:flex;gap:24px;flex-wrap:wrap}
+.upcoming-detail{font-size:.85rem;color:var(--text2)}
+.upcoming-detail strong{color:var(--text);font-weight:600}
+.upcoming-fighters{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.upcoming-fighter-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 14px;border-radius:20px;font-size:.78rem;font-weight:600;
+  background:rgba(224,184,78,.08);color:var(--accent);border:1px solid rgba(224,184,78,.15);
+}
+.upcoming-badge{
+  display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--accent);background:rgba(224,184,78,.1);padding:3px 10px;border-radius:4px;
+  margin-bottom:12px;
+}
+
+/* ========== YEARLY CARD KEYWORD & BAR ========== */
+.yearly-keyword{
+  font-size:.65rem;color:var(--accent);font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:12px;
+  padding:3px 10px;display:inline-block;
+  border:1px solid rgba(224,184,78,.2);border-radius:4px;
+  background:rgba(224,184,78,.05);
+}
+.yearly-bar-row{display:flex;gap:4px;margin-top:14px;height:28px;align-items:flex-end}
+.yearly-bar-item{
+  flex:1;border-radius:4px 4px 0 0;min-height:4px;
+  position:relative;transition:height .3s ease;
+}
+.yearly-bar-item.bar-win{background:var(--green);opacity:.7}
+.yearly-bar-item.bar-loss{background:var(--red);opacity:.5}
+.yearly-bar-item:hover{opacity:1}
+.yearly-bar-label{
+  font-size:.55rem;color:var(--text3);text-align:center;margin-top:2px;font-weight:600;
+}
+.yearly-bar-col{flex:1;display:flex;flex-direction:column;align-items:center}
+.yearly-card{padding:24px 20px 20px}
+
+/* ========== CARD HOVER ENHANCEMENT ========== */
+.card{transition:all .3s cubic-bezier(.25,.46,.45,.94)}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.35)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -473,6 +543,10 @@ footer p{font-size:.78rem;color:var(--text3);line-height:1.8}
 
   .fighter-avatar{width:80px;height:80px;font-size:1.8rem}
   .card.fighter-ace .fighter-avatar{width:90px;height:90px;font-size:2rem}
+
+  .upcoming-card{padding:20px}
+  .upcoming-countdown{font-size:1.4rem}
+  .upcoming-event-name{font-size:1.1rem}
 }
 @media(max-width:480px){
   .hero h1{font-size:1.8rem}

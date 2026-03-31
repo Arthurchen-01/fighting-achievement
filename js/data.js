@@ -66,6 +66,8 @@ const HONORS = [
   {year:2024,icon:"📋",title:"平台战绩突破200场",desc:"平台累计比赛场次突破200场里程碑。"},
 ];
 
+const VIDEOS = [];
+
 const STATS = {
   totalMatches: 218,
   totalWins: 178,

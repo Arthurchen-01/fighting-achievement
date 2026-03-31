@@ -18,10 +18,7 @@
       <li><a href="#home" data-page="home" class="active">首页</a></li>
       <li><a href="#matches" data-page="matches">比赛库</a></li>
       <li><a href="#fighters" data-page="fighters">选手库</a></li>
-      <li><a href="#tournaments" data-page="tournaments">赛事</a></li>
-      <li><a href="#honors" data-page="honors">荣誉</a></li>
-      <li><a href="#videos" data-page="videos">视频</a></li>
-      <li><a href="#about" data-page="about">关于</a></li>
+      <li><a href="#honors" data-page="honors">荣誉殿堂</a></li>
     </ul>
   </div>
 </nav>
@@ -33,8 +30,8 @@
     <div class="hero-bg"></div>
     <div class="hero-content">
       <div class="hero-badge">EST. 2024 · 搏击战绩权威平台</div>
-      <h1>用<span class="gold">拳头</span>书写<br>每一页<span class="gold">历史</span></h1>
-      <p class="hero-sub">218 场比赛 · 178 场胜利 · 89 次 KO/TKO · 14 枚奖牌</p>
+      <h1><span class="gold">拳头</span>不会说谎</h1>
+      <p class="hero-sub">218 场战斗，178 次证明自己。实力即真相。</p>
       <div class="hero-cta">
         <a href="#matches" onclick="event.preventDefault();document.querySelector('[data-page=matches]').click()" class="hero-btn">浏览战绩</a>
         <a href="#fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" class="hero-btn hero-btn-outline">核心选手</a>
@@ -46,6 +43,19 @@
   <div class="container">
     <div class="stats-section">
       <div class="stats" id="stats-bar"></div>
+    </div>
+  </div>
+
+  <!-- YEARLY OVERVIEW -->
+  <div class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">OVERVIEW</div>
+        <h2>年度战绩总览</h2>
+        <p class="section-desc">每一年的征途与收获</p>
+      </div>
+      <div class="yearly-grid" id="yearly-overview"></div>
+      <div class="trend-chart" id="trend-chart"></div>
     </div>
   </div>
 
@@ -72,10 +82,7 @@
         <h2>核心选手</h2>
         <p class="section-desc">平台王牌阵容</p>
       </div>
-      <div class="card-grid g4" id="home-fighters"></div>
-      <div class="section-footer">
-        <a href="#fighters" data-page="fighters" onclick="event.preventDefault();document.querySelector('[data-page=fighters]').click()" class="view-all">查看全部选手 →</a>
-      </div>
+      <div class="card-grid g3" id="home-fighters"></div>
     </div>
   </div>
 </div>
@@ -134,19 +141,19 @@
     <div class="about-grid">
       <div class="about-card">
         <h3>平台定位</h3>
-        <p>战绩平台是一个专注于搏击运动（泰拳、自由搏击、拳击）的综合训练与比赛平台。我们致力于培养高水平搏击选手，在国内外各大赛事中展现实力。</p>
+        <p>战绩平台专注于搏击运动（泰拳、自由搏击、拳击）的竞技成绩记录与展示。我们系统化地记录每一位选手在国内外各大赛事中的表现、成绩与荣誉，构建完整的平台战绩档案。</p>
       </div>
       <div class="about-card">
         <h3>核心理念</h3>
-        <p>以战绩为核心，用实力说话。每一场比赛都是我们能力的证明，每一份荣誉都是我们努力的结晶。我们相信真正的实力不需要华丽的言辞。</p>
+        <p>以战绩为核心，用实力说话。每一场比赛都是我们能力的证明，每一份荣誉都是我们努力的结晶。真实的比赛记录比任何言辞都有说服力。</p>
       </div>
       <div class="about-card">
-        <h3>发展愿景</h3>
-        <p>成为国内顶尖的搏击训练与竞赛平台。通过系统化训练和国际化赛事参与，持续提升选手竞技水平，为搏击运动的发展贡献力量。</p>
+        <h3>数据积累</h3>
+        <p>平台持续记录和沉淀每一场正式比赛数据，涵盖赛事名称、对手信息、比赛结果、技术细节。通过长期的数据积累，形成可追溯、可验证的战绩体系。</p>
       </div>
       <div class="about-card">
-        <h3>参赛经历</h3>
-        <p>平台积极参与国内外各类搏击赛事，包括世界运动会、全国锦标赛、东亚锦标赛、国际邀请赛等。通过高水平赛事检验训练成果，积累比赛经验。</p>
+        <h3>参赛履历</h3>
+        <p>平台积极参与国内外各类搏击赛事，包括世界运动会、全国锦标赛、东亚锦标赛、国际邀请赛等。每一场比赛都是平台实力的实证。</p>
       </div>
     </div>
   </div>
@@ -157,6 +164,11 @@
   <div class="container">
     <p style="margin-bottom:8px">⚔️ 战绩平台 — 用实力说话</p>
     <p>如需沟通，可通过平台官方渠道联系</p>
+    <div class="footer-links">
+      <a href="#tournaments" data-page="tournaments" onclick="event.preventDefault();document.querySelector('[data-page=tournaments]').click()">赛事</a>
+      <a href="#videos" data-page="videos" onclick="event.preventDefault();document.querySelector('[data-page=videos]').click()">视频</a>
+      <a href="#about" data-page="about" onclick="event.preventDefault();document.querySelector('[data-page=about]').click()">关于我们</a>
+    </div>
   </div>
 </footer>
 

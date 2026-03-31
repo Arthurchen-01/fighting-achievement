@@ -13,6 +13,7 @@
 
   function init() {
     renderStats();
+    renderYearlyOverview();
     renderHomeMatches();
     renderHomeFighters();
     renderAllMatches();
@@ -22,6 +23,7 @@
     renderVideos();
     setupNav();
     setupModals();
+    setupFooterLinks();
     showPage('home');
   }
 
@@ -60,24 +62,105 @@
     window.scrollTo(0, 0);
   }
 
-  // Stats
+  // Yearly overview
+  function renderYearlyOverview() {
+    const el = $('#yearly-overview');
+    const chart = $('#trend-chart');
+    if (!el) return;
+
+    const yearData = [
+      {year: 2026, wins: 7, losses: 1, total: 8, detail: '世运会选拔赛 · 全国拳击锦标赛', active: true},
+      {year: 2025, wins: 19, losses: 3, total: 22, detail: '全国泰拳锦标赛双金 · 国际赛突破'},
+      {year: 2024, wins: 129, losses: 31, total: 160, detail: '平台快速发展期 · 战绩突破200场'},
+      {year: 2023, wins: 23, losses: 5, total: 28, detail: '平台初创 · 首批选手注册'},
+    ];
+
+    el.innerHTML = yearData.map(y => {
+      const rate = ((y.wins / y.total) * 100).toFixed(1);
+      return `
+        <div class="yearly-card">
+          <div class="yearly-year">${y.year}${y.active ? ' · 进行中' : ''}</div>
+          <div class="yearly-record">${y.wins}胜${y.losses}负</div>
+          <div class="yearly-winrate">${rate}% 胜率</div>
+          <div class="yearly-detail">${y.total}场 · ${y.detail}</div>
+        </div>
+      `;
+    }).join('');
+
+    // SVG trend chart - yearly wins
+    if (chart) {
+      const points = yearData.map(y => y.wins).reverse(); // 2023-2026
+      const maxVal = Math.max(...points);
+      const w = 400, h = 80, padX = 30, padY = 15;
+      const scaleX = (w - padX * 2) / (points.length - 1);
+      const scaleY = (h - padY * 2) / maxVal;
+      const coords = points.map((v, i) => `${padX + i * scaleX},${h - padY - v * scaleY}`);
+      const years = ['2023', '2024', '2025', '2026'];
+
+      chart.innerHTML = `
+        <svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:500px" xmlns="http://www.w3.org/2000/svg">
+          <!-- grid lines -->
+          <line x1="${padX}" y1="${h-padY}" x2="${w-padX}" y2="${h-padY}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <line x1="${padX}" y1="${padY}" x2="${padX}" y2="${h-padY}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <!-- trend line -->
+          <polyline points="${coords.join(' ')}" fill="none" stroke="#e0b84e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- data points -->
+          ${points.map((v, i) => `<circle cx="${padX + i * scaleX}" cy="${h - padY - v * scaleY}" r="4" fill="#e0b84e"/>`).join('')}
+          <!-- year labels -->
+          ${years.map((yr, i) => `<text x="${padX + i * scaleX}" y="${h - 2}" text-anchor="middle" fill="#666" font-size="10" font-family="inherit">${yr}</text>`).join('')}
+          <!-- value labels -->
+          ${points.map((v, i) => `<text x="${padX + i * scaleX}" y="${h - padY - v * scaleY - 10}" text-anchor="middle" fill="#e0b84e" font-size="11" font-weight="700" font-family="inherit">${v}</text>`).join('')}
+        </svg>
+      `;
+    }
+  }
+
+  // Footer link navigation
+  function setupFooterLinks() {
+    $$('.footer-links a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const page = a.dataset.page;
+        showPage(page);
+      });
+    });
+  }
+
+  // Stats - tiered layout
   function renderStats() {
     const el = $('#stats-bar');
     if (!el) return;
-    const items = [
-      {num: STATS.totalMatches, label: '总比赛场次'},
-      {num: STATS.totalWins, label: '总胜场'},
-      {num: STATS.totalKOs, label: 'KO/TKO'},
-      {num: STATS.medals, label: '奖牌数'},
-      {num: STATS.intlMatches, label: '国际赛事'},
-      {num: STATS.recentForm, label: '近期战绩'},
-    ];
-    el.innerHTML = items.map(i => `
-      <div class="stat">
-        <div class="stat-num">${i.num}</div>
-        <div class="stat-label">${i.label}</div>
+    const winRate = ((STATS.totalWins / STATS.totalMatches) * 100).toFixed(1);
+    el.innerHTML = `
+      <div class="stats-row stats-row-primary">
+        <div class="stat stat-primary">
+          <div class="stat-num">${STATS.totalWins}</div>
+          <div class="stat-label">总胜场</div>
+        </div>
+        <div class="stat stat-primary">
+          <div class="stat-num">${winRate}%</div>
+          <div class="stat-label">胜率</div>
+        </div>
       </div>
-    `).join('');
+      <div class="stats-row stats-row-secondary">
+        <div class="stat stat-secondary">
+          <div class="stat-num">${STATS.totalMatches}</div>
+          <div class="stat-label">总场次</div>
+        </div>
+        <div class="stat stat-secondary">
+          <div class="stat-num">${STATS.totalKOs}</div>
+          <div class="stat-label">KO/TKO</div>
+        </div>
+        <div class="stat stat-secondary">
+          <div class="stat-num">${STATS.medals}</div>
+          <div class="stat-label">奖牌</div>
+        </div>
+        <div class="stat stat-secondary">
+          <div class="stat-num">${STATS.intlMatches}</div>
+          <div class="stat-label">国际赛</div>
+        </div>
+      </div>
+    `;
   }
 
   // Home matches (latest 6)
@@ -89,11 +172,11 @@
     setupMatchClicks(el);
   }
 
-  // Home fighters
+  // Home fighters - all 6
   function renderHomeFighters() {
     const el = $('#home-fighters');
     if (!el) return;
-    el.innerHTML = FIGHTERS.slice(0, 4).map(f => renderFighterCard(f, true)).join('');
+    el.innerHTML = FIGHTERS.map(f => renderFighterCard(f, true)).join('');
     setupFighterClicks(el);
   }
 
